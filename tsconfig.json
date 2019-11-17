@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "lib": [
+            "es2017",
+            "dom",
+        ],
+        "esModuleInterop": true,
+        "baseUrl": ".",
+        "paths": {
+            "*" : ["types/*"]
+        }
+    },
+    "exclude": ["temp"]
+}
