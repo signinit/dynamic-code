@@ -3,7 +3,7 @@ import { resolve } from "path"
 
 //TODO rename to generator
 
-export type CompilationResult = {
+export type GeneratedResult = {
     externalFiles: Array<File>
     imports: Array<string>
     code: string
@@ -14,12 +14,12 @@ export type File = {
     data: string
 }
 
-export abstract class Compileable<T = any> {
+export abstract class Generatable<T = any> {
 
-    abstract compileValue(): T
+    abstract generateValue(): T
 
-    public compile(mainFileName: string = "index.ts"): Array<File> {
-        let { externalFiles, imports, code } = this.compileResult()
+    public generate(mainFileName: string = "index.ts"): Array<File> {
+        let { externalFiles, imports, code } = this.generateResult()
         //TODO merge imports
         let mainFile: File = {
             name: mainFileName,
@@ -32,7 +32,7 @@ export abstract class Compileable<T = any> {
         return externalFiles.concat(mainFile)
     }
 
-    abstract compileResult(): CompilationResult
+    abstract generateResult(): GeneratedResult
 
 }
 
@@ -59,44 +59,44 @@ export class DefaultImport extends Import {
 
 export class ElementImport extends Import {
 
-    getStatement(variableName: string): string {
-        return `import { ${this.element} as ${variableName} } from "${this.path}";`
-    }
-
     constructor(private element: string, path: string) {
         super(path)
+    }
+
+    getStatement(variableName: string): string {
+        return `import { ${this.element} as ${variableName} } from "${this.path}";`
     }
 
 }
 
 export class AllImport extends Import {
 
+    constructor(path: string) {
+        super(path)
+    }
+    
     getStatement(variableName: string): string {
         return `import * as ${variableName} from "${this.path}";`
     }
 
-    constructor(path: string) {
-        super(path)
-    }
-
 }
-export type GetCompileableArray<Parameters extends Array<any>> = {
-    [Index in keyof Parameters]: Compileable<Parameters[Index]>
+export type GetGeneratableArray<Parameters extends Array<any>> = {
+    [Index in keyof Parameters]: Generatable<Parameters[Index]>
 }
 
-export class CompileableArray<T extends Array<any>> extends Compileable<T> {
+export class GeneratableArray<T extends Array<any>> extends Generatable<T> {
 
-    private array: GetCompileableArray<T>
+    private array: GetGeneratableArray<T>
 
     constructor(
-        ...array: GetCompileableArray<T>
+        ...array: GetGeneratableArray<T>
     ) {
         super()
         this.array = array
     }
 
-    compileResult(): CompilationResult {
-        let compiledArray = this.array.reduce((prev, cur) => prev.concat([ cur.compileResult() ]), <Array<CompilationResult>>[])
+    generateResult(): GeneratedResult {
+        let compiledArray = this.array.reduce((prev, cur) => prev.concat([ cur.generateResult() ]), <Array<GeneratedResult>>[])
         return {
             code: `[${
                 compiledArray
@@ -108,8 +108,8 @@ export class CompileableArray<T extends Array<any>> extends Compileable<T> {
         }
     }
 
-    compileValue(): T {
-        return this.array.reduce((prev, cur) => prev.concat([ cur.compileValue() ]), <Array<any>>[]) as T
+    generateValue(): T {
+        return this.array.reduce((prev, cur) => prev.concat([ cur.generateValue() ]), <Array<any>>[]) as T
     }
 
 }
@@ -118,27 +118,27 @@ export type Object = {
     [Name: string]: any
 }
 
-export type GetCompileableObject<O extends Object> = {
-    [Name in keyof O]: Compileable<O[Name]>
+export type GetGeneratableObject<O extends Object> = {
+    [Name in keyof O]: Generatable<O[Name]>
 }
 
-export class CompileableObject<T extends Object> extends Compileable<T> {
+export class GeneratableObject<T extends Object> extends Generatable<T> {
 
     constructor(
-        private object: GetCompileableObject<T>
+        private object: GetGeneratableObject<T>
     ) {
         super()
     }
 
-    compileValue(): T {
+    generateValue(): T {
         return Object.entries(this.object).reduce((prev, [name, compileable]) => {
-            prev[name] = compileable.compileValue()
+            prev[name] = compileable.generateValue()
             return prev
         }, {} as any)
     }
 
-    compileResult(): CompilationResult {
-        let entries = Object.entries(this.object).map(([name, compileable]) => [name, compileable.compileResult()] as [string, CompilationResult])
+    generateResult(): GeneratedResult {
+        let entries = Object.entries(this.object).map(([name, compileable]) => [name, compileable.generateResult()] as [string, GeneratedResult])
         return {
             code: `{${
                 entries.map(([name, compileable]) => `"${name}":${compileable.code}`).join(",")
@@ -150,7 +150,7 @@ export class CompileableObject<T extends Object> extends Compileable<T> {
 
 }
 
-export class CompileableJSON<T> extends Compileable<T> {
+export class GeneratableJSON<T> extends Generatable<T> {
 
     constructor(
         private value: T
@@ -158,11 +158,15 @@ export class CompileableJSON<T> extends Compileable<T> {
         super()
     }
 
-    compileValue(): T {
+    setValue(value: T): void {
+        this.value = value
+    }
+
+    generateValue(): T {
         return this.value
     }
 
-    compileResult(): CompilationResult {
+    generateResult(): GeneratedResult {
         return {
             code: JSON.stringify(this.value),
             externalFiles: [],
@@ -172,7 +176,7 @@ export class CompileableJSON<T> extends Compileable<T> {
 
 }
 
-export class CompileableImport<T> extends Compileable<T> {
+export class GeneratableImport<T> extends Generatable<T> {
 
     constructor(
         private value: T,
@@ -181,7 +185,7 @@ export class CompileableImport<T> extends Compileable<T> {
         super()
     }
 
-    compileResult(): CompilationResult {
+    generateResult(): GeneratedResult {
         let variableName = randomVarName()
         return {
             code: variableName,
@@ -192,31 +196,31 @@ export class CompileableImport<T> extends Compileable<T> {
         }
     }
 
-    compileValue(): T {
+    generateValue(): T {
         return this.value
     }
 
 }
 
-export class CompileableFunctionExecution<Result, Parameters extends Array<any>> extends Compileable<Result> {
+export class GenertableFunctionExecution<Result, Parameters extends Array<any>> extends Generatable<Result> {
 
-    compileValue(): Result {
-        let parameters = this.parameters.map(parameter => parameter.compileValue()) as Parameters
-        return this.func.compileValue()(...parameters)
+    generateValue(): Result {
+        let parameters = this.parameters.map(parameter => parameter.generateValue()) as Parameters
+        return this.func.generateValue()(...parameters)
     }
-    private parameters:  GetCompileableArray<Parameters>
+    private parameters:  GetGeneratableArray<Parameters>
 
     constructor(
-        private func: Compileable<(...params: Parameters) => Result>,
-        ...paramters: GetCompileableArray<Parameters>
+        private func: Generatable<(...params: Parameters) => Result>,
+        ...paramters: GetGeneratableArray<Parameters>
     ) {
         super()
         this.parameters = paramters
     }
 
-    compileResult(): CompilationResult {
-        let { code, externalFiles, imports } = this.func.compileResult()
-        let parameters = this.parameters.map(parameter => parameter.compileResult()) as Array<CompilationResult>
+    generateResult(): GeneratedResult {
+        let { code, externalFiles, imports } = this.func.generateResult()
+        let parameters = this.parameters.map(parameter => parameter.generateResult()) as Array<GeneratedResult>
         return {
             code: `${code}(${parameters.map(parameter => parameter.code).join(",")});`,
             externalFiles: parameters.reduce((prev, cur) => prev.concat(cur.externalFiles), <Array<File>>[]).concat(externalFiles),
@@ -226,27 +230,27 @@ export class CompileableFunctionExecution<Result, Parameters extends Array<any>>
 
 }
 
-export class CompileableSplit<T> extends Compileable<SplittedData<T>> {
+export class GeneratableSplit<T> extends Generatable<SplittedData<T>> {
 
     constructor(
-        private compileable: Compileable<T>,
+        private compileable: Generatable<T>,
         private filename: string | undefined = undefined
     ) {
         super()
     }
 
-    compileValue(): SplittedData<T> {
+    generateValue(): SplittedData<T> {
         return {
             type: "static",
-            value: this.compileable.compileValue()
+            value: this.compileable.generateValue()
         }
     }
     
-    compileResult(): CompilationResult {
-        let { code, imports, externalFiles } = this.compileable.compileResult()
+    generateResult(): GeneratedResult {
+        let { code, imports, externalFiles } = this.compileable.generateResult()
         let filename: string
         if(this.filename == null) {
-            filename = `${guid()}.ts`
+            filename = `${randomFileName()}.ts`
         } else {
             filename = this.filename
         }
@@ -270,12 +274,15 @@ export class CompileableSplit<T> extends Compileable<SplittedData<T>> {
 /**
  * creates a random globally unique id
  */
-function guid() {
+function randomFileName() {
     return "ss-s-s-s-sss".replace(/s/g, () => Math.floor((1 + Math.random()) * 0x10000)
         .toString(16)
         .substring(1));
 }
 
+/**
+ * creates a random globally unique variable name
+ */
 export function randomVarName() {
     return "ssssssss".replace(/s/g, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97))
 }

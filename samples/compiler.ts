@@ -1,9 +1,44 @@
 import webpack, { Configuration } from "webpack"
 import MemoryFS from "memory-fs"
-import { Union } from "unionfs"
 import fs from "fs"
 import { resolve } from "path"
-import { File, } from ".."
+import { writeFileSync, mkdirSync, existsSync } from "fs"
+import { File } from ".."
+
+export function compileTypescript(files: Array<File>, tsconfig: any): Promise<CompilationResult> {
+
+    files.push({
+        name: "tsconfig.json",
+        data: JSON.stringify(tsconfig)
+    })
+
+    if(!existsSync("temp")) {
+        mkdirSync("temp")
+    }
+    
+    files.forEach(file => writeFileSync(`temp/${file.name}`, file.data))
+
+    return compile({
+        entry: "./temp/index.ts",
+        module: {
+            rules: [
+                {
+                  test: /\.tsx?$/,
+                  use: [{
+                        loader: resolve(__dirname, "../node_modules/ts-loader")
+                  }],
+                  exclude: /node_modules/
+                },
+            ]
+        },
+        resolve: {
+            extensions: [ '.tsx', '.ts', '.js' ]
+        },
+        output: {
+            filename: 'bundle.js'
+        },
+    })
+}
 
 export function compile(configuration: Configuration): Promise<CompilationResult> {
     //TODO all dynamic imports need to get recompiled even if just one changes

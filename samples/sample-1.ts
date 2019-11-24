@@ -1,20 +1,24 @@
-import { CompileableJSON, CompileableArray } from ".."
+import { GeneratableJSON, GeneratableArray } from ".."
 
 let value = 20 / 2
 
-let element1 = new CompileableJSON(value)
+let element1 = new GeneratableJSON(value)
+
+console.log(element1.generateValue())
+
+console.log(element1.generate("mainFile.ts"))
 
 let object = {
     text: "Hello "
 }
 object.text += "World"
 
-let element2 = new CompileableJSON(object)
+let element2 = new GeneratableJSON(object)
 
-let array = new CompileableArray(element1, element2)
+let array = new GeneratableArray(element1, element2)
 
-console.log(array.compile())
+console.log(array.generate())
 
 object.text = "Change!"
 
-console.log(array.compile())
+console.log(array.generate())

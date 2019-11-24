@@ -1,23 +1,32 @@
 {
   "name": "dynamic-code",
   "version": "1.0.0",
-  "description": "",
+  "description": "a structure for building systems that recompile themself",
   "main": "index",
   "scripts": {
     "build": "tsc",
     "sample1": "node samples/sample-1.js",
-    "sample2": "node samples/sample-2.js"
+    "sample2": "node samples/sample-2.js",
+    "sample3": "node samples/sample-3.js",
+    "sample4": "node samples/sample-4.js"
   },
   "author": "Bela Bohlender",
   "license": "MIT",
   "devDependencies": {
+    "@types/express": "^4.17.2",
     "@types/memory-fs": "^0.3.2",
     "@types/node": "^12.12.8",
+    "@types/react": "^16.9.13",
+    "@types/react-dom": "^16.9.4",
     "@types/webpack": "^4.41.0",
+    "express": "^4.17.1",
     "memory-fs": "^0.5.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.2",
     "unionfs": "^4.2.0",
     "webpack": "^4.41.2"
-  }
+  },
+  "dependencies": {}
 }
