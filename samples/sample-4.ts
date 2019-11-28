@@ -4,14 +4,15 @@ import { compileTypescript } from "./compiler"
 import ReactDOM from "react-dom/server"
 import express from "express"
 import { render } from "./ssr-app"
+import { HybridGeneratorImport, HybridGeneratorFunctionExecution, HybridGeneratorJSON } from "../hybrid-generator"
 
 const expressApp = express()
 
 //this function create the app element which is shared between webapp and webserver
-let ssrAppFunction = new GeneratableImport(ssrApp, new ElementImport("ssrApp", "samples/ssr-app"))
+let ssrAppFunction = new HybridGeneratorImport(ssrApp, new ElementImport("ssrApp", "samples/ssr-app"))
 
 //this function hydrates the served html site and is only needed on the web page
-let ssrRenderFunction = new GeneratableImport(render, new ElementImport("render", "samples/ssr-app"))
+let ssrRenderFunction = new HybridGeneratorImport(render, new ElementImport("render", "samples/ssr-app"))
 
 //dynamic code is more powerfull than just this primitive data
 //by providing a full react components as params to the app the react app becomes dynamic
@@ -22,46 +23,46 @@ let data: AppParams = {
     title: "Title"
 }
 
-let appParam = new GeneratableJSON(data)
+let appParam = new HybridGeneratorJSON(data)
 
-let appGeneratable = new GenertableFunctionExecution(ssrAppFunction, appParam)
-let renderedGeneratable = new GenertableFunctionExecution(ssrRenderFunction, appParam)
+let appGenerator = new HybridGeneratorFunctionExecution(ssrAppFunction, appParam)
+let renderedGenerator = new HybridGeneratorFunctionExecution(ssrRenderFunction, appParam)
 
 let bundledCode: string = ""
+let indexHtml: string = ""
 
 expressApp.get('/bundle.js', function (req, res) {
     res.send(bundledCode)
 })
 
 expressApp.get('/', function (req, res) {
-    res.send(`<html>
-    <head>
-        <script async src='bundle.js'></script>
-    </head>
-    <body>
-        <div id='root'>${ReactDOM.renderToString(appGeneratable.generateValue())}</div>
-    </body>
-</html>`)
+    res.send(indexHtml)
 })
 
 expressApp.get("/change", (req, res) => {
-    appParam.setValue({
+    appParam.update({
         pageNumber: parseInt(req.query.pageNumber || "2"),
         subtitle: req.query.subtitle || "Subtitle",
         title: req.query.title || "Title"
     })
-    compile()
-        .then(() => res.redirect("/"))
-    
+    res.redirect("/")
 })
 
 expressApp.listen(80)
 
-compile()
+appGenerator.value.subscribe(app => {
+    indexHtml = `<html>
+        <head>
+            <script async src='bundle.js'></script>
+        </head>
+        <body>
+            <div id='root'>${ReactDOM.renderToString(app)}</div>
+        </body>
+    </html>`
+})
 
-function compile(): Promise<void> {
-    console.log("app is compiling ...")
-    return compileTypescript(renderedGeneratable.generate(), {
+renderedGenerator.observeFiles().subscribe(files => {
+    compileTypescript(files, {
         "compilerOptions": {
             "jsx": "react",
             "esModuleInterop": true
@@ -74,4 +75,5 @@ function compile(): Promise<void> {
         .catch(error => {
             console.log(error)
         })
-}
+})
+    

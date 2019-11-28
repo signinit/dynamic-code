@@ -28,5 +28,7 @@
     "unionfs": "^4.2.0",
     "webpack": "^4.41.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "rxjs": "^6.5.3"
+  }
 }

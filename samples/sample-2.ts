@@ -1,8 +1,9 @@
 import { GeneratableJSON, GenertableFunctionExecution, GeneratableImport, ElementImport } from "..";
 import { sampleFunction } from "./function"
 import { compileTypescript } from "./compiler";
+import { HybridGeneratableImport } from "../hybrid-generatable";
 
-let func = new GeneratableImport(sampleFunction, new ElementImport("sampleFunction", "samples/function"))
+let func = new HybridGeneratableImport(sampleFunction, new ElementImport("sampleFunction", "samples/function"))
 
 let value: any = { z: "World" }
 

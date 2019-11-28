@@ -1,11 +1,12 @@
-import { GeneratableImport, ElementImport, GenertableFunctionExecution, GeneratableJSON } from ".."
-import { app, AppParams } from "./app"
+import { ElementImport, GenertableFunctionExecution, GeneratableJSON } from ".."
+import { AppParams } from "./app"
 import { compileTypescript } from "./compiler"
 import express from "express"
+import { GeneratorImport, GeneratorFunctionExecution, GeneratorJSON } from "../generator"
 
 const expressApp = express()
 
-let appFunction = new GeneratableImport(app, new ElementImport("app", "samples/app"))
+let appFunction = new GeneratorImport(new ElementImport("app", "samples/app"))
 
 //dynamic code is more powerfull than just this primitive data
 //by providing a full react components as params to the app the react app becomes dynamic
@@ -16,9 +17,9 @@ let data: AppParams = {
     title: "Title"
 }
 
-let appParam = new GeneratableJSON(data)
+let appParam = new GeneratorJSON(data)
 
-let appGeneratable = new GenertableFunctionExecution(appFunction, appParam)
+let appGenerator = new GeneratorFunctionExecution(appFunction, appParam)
 
 let bundledCode: string = ""
 let indexHtml: string = `<html>
@@ -39,23 +40,18 @@ expressApp.get('/', function (req, res) {
 })
 
 expressApp.get("/change", (req, res) => {
-    appParam.setValue({
+    appParam.update({
         pageNumber: parseInt(req.query.pageNumber || "2"),
         subtitle: req.query.subtitle || "Subtitle",
         title: req.query.title || "Title"
     })
-    compile()
-        .then(() => res.redirect("/"))
-    
+    res.redirect("/")
 })
 
 expressApp.listen(80)
 
-compile()
-
-function compile(): Promise<void> {
-    console.log("app is compiling ...")
-    return compileTypescript(appGeneratable.generate(), {
+appGenerator.observeFiles().subscribe(files => {
+    compileTypescript(files, {
         "compilerOptions": {
             "jsx": "react",
             "esModuleInterop": true
@@ -68,4 +64,4 @@ function compile(): Promise<void> {
         .catch(error => {
             console.log(error)
         })
-}
+    })
