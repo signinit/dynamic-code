@@ -1,6 +1,9 @@
 import { resolve } from "path"
 
 export * from "./generatable"
+export * from "./hybrid-generatable"
+export * from "./generator"
+export * from "./hybrid-generator"
 
 export type GeneratedResult = {
     externalFiles: Array<File>

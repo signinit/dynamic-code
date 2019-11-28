@@ -1,6 +1,6 @@
 {
   "name": "dynamic-code",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "a structure for building systems that recompile themself",
   "main": "index",
   "scripts": {
