@@ -1,6 +1,8 @@
 /samples/
 /.vscode/
 /types/
+/temp/
+/.git/
 *.png
-README.md
+*.md
 tsconfig.json
