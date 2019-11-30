@@ -49,3 +49,4 @@ Obviously if your web app does not need to be dynamic there are much better tool
 * explain HybridGeneratable in sample 3 and only use normal Generatables in the samples above
 * Move the samples to the specific readme's
 * check share functionality and general correctness of when to generate
+* remove README.md's from npm package

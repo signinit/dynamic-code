@@ -1,8 +1,9 @@
 {
   "name": "dynamic-code",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "a structure for building systems that recompile themself",
-  "main": "index",
+  "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "build": "tsc",
     "sample1": "node samples/sample-1.js",

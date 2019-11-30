@@ -5,4 +5,6 @@
 /.git/
 *.png
 *.md
+*.ts
+!*.d.ts
 tsconfig.json
