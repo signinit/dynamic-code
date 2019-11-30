@@ -78,7 +78,7 @@ export function generateFunctionExecution(func: GeneratedResult, ...parameters: 
     }
 }
 
-export function generateLazyLoadable(result: GeneratedResult, filename?: string): GeneratedResult {
+export function generateLazyLoading(result: GeneratedResult, filename?: string): GeneratedResult {
     if(filename == null) {
         filename = `${randomFileName()}.ts`
     }
@@ -93,7 +93,7 @@ export function generateLazyLoadable(result: GeneratedResult, filename?: string)
     }
 }
 
-export function generateShareable(result: GeneratedResult): GeneratedResult {
+export function generateShare(result: GeneratedResult): GeneratedResult {
     let variableName = randomVarName()
     return {
         code: variableName,
@@ -113,7 +113,7 @@ export function getFiles(result: GeneratedResult, mailFilename: string = "index.
         data: `${
             result.imports.map(imp => imp + "\n").join("")
         }${
-            result.constants.map(constant => `const "${constant.name} = ${constant.value}"\n`).join("")
+            result.constants.map(constant => `const "${constant.name}" = ${constant.value}\n`).join("")
         }${
             result.code
         }`

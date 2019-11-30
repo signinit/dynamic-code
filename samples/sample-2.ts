@@ -1,4 +1,4 @@
-import { GeneratableJSON, GenertableFunctionExecution, GeneratableImport, ElementImport } from "..";
+import { GeneratableJSON, GenertableFunctionExecution, GeneratableImport, ElementImport } from "../index";
 import { sampleFunction } from "./function"
 import { compileTypescript } from "./compiler";
 import { HybridGeneratableImport } from "../hybrid-generatable";

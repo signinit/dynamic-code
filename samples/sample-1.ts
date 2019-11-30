@@ -1,4 +1,4 @@
-import { GeneratableJSON } from ".."
+import { GeneratableJSON } from "../index"
 
 let generatable = new GeneratableJSON(20)
 

@@ -1,5 +1,5 @@
 import { Generatable, GeneratableJSON, GenertableFunctionExecution, GeneratableLazyLoading, BaseGeneratable, GeneratableShare } from "../generatable";
-import { Import, generateImport, GeneratedResult } from "..";
+import { Import, generateImport, GeneratedResult } from "../index";
 
 export interface HybridGeneratable<T = any> extends Generatable {
 

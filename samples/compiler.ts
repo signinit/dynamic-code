@@ -3,7 +3,7 @@ import MemoryFS from "memory-fs"
 import fs from "fs"
 import { resolve } from "path"
 import { writeFileSync, mkdirSync, existsSync } from "fs"
-import { File } from ".."
+import { File } from "../index"
 
 export function compileTypescript(files: Array<File>, tsconfig: any): Promise<CompilationResult> {
 

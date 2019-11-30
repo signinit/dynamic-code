@@ -1,4 +1,4 @@
-import { GeneratedResult, generateFunctionExecution, generateImport, Import, generateJson, File, getFiles, generateLazyLoadable as generateLazyLoading, generateShareable as generateShare } from ".."
+import { GeneratedResult, generateFunctionExecution, generateImport, Import, generateJson, File, getFiles, generateLazyLoading, generateShare } from "../index"
 
 export interface Generatable {
 

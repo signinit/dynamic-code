@@ -1,4 +1,4 @@
-import { GeneratableImport, ElementImport, GenertableFunctionExecution, GeneratableJSON } from ".."
+import { GeneratableImport, ElementImport, GenertableFunctionExecution, GeneratableJSON } from "../index"
 import { ssrApp, AppParams } from "./ssr-app"
 import { compileTypescript } from "./compiler"
 import ReactDOM from "react-dom/server"

@@ -1,7 +1,7 @@
 import { Observable, BehaviorSubject, Subject, combineLatest } from "rxjs"
 import { map, switchMap, shareReplay } from "rxjs/operators"
 import { Generator, GeneratorJSON, BaseGenerator, GeneratorFunctionExecution, GeneratorLazyLoading, GeneratorShare } from "../generator"
-import { Import, GeneratedResult, generateImport } from ".."
+import { Import, GeneratedResult, generateImport } from "../index"
 
 export interface HybridGenerator<T = any> extends Generator {
 

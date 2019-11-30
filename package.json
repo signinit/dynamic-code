@@ -1,6 +1,6 @@
 {
   "name": "dynamic-code",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "a structure for building systems that recompile themself",
   "main": "index.js",
   "types": "index.d.ts",

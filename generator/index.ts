@@ -1,6 +1,6 @@
 import { Observable, Subject, BehaviorSubject, combineLatest } from "rxjs"
 import { map, switchMap, shareReplay } from "rxjs/operators"
-import { GeneratedResult, getFiles, File, generateJson, Import, generateImport, generateFunctionExecution, generateLazyLoadable, generateShareable as generateShare } from "..";
+import { GeneratedResult, getFiles, File, generateJson, Import, generateImport, generateFunctionExecution, generateLazyLoading, generateShare } from "../index";
 
 export interface Generator {
 
@@ -124,7 +124,7 @@ export class GeneratorLazyLoading<G extends Generator = Generator> extends BaseG
         this.generatorSubject = new BehaviorSubject<G>(generator)
         this.result = this.generatorSubject.pipe(
             switchMap(generator => generator.result),
-            map(result => generateLazyLoadable(result, this.filename)),
+            map(result => generateLazyLoading(result, this.filename)),
             shareReplay(1)
         )
     }
