@@ -1,11 +1,11 @@
 # Dynamic Code
 
-![Dynamic Code GIF](dynamic-code.gif)
-
 This package is all about dynamic javascript/typescript/... systems. Dynamic here means: able to change and (re)generate its code. 
 Its not really about the code thats behind this package but more about the way of structuring a dynamic system.
 
-## Why and When should you use Dynamic Code
+![Dynamic Code GIF](dynamic-code.gif)
+
+## Why and When can you use Dynamic Code
 
 Dynamic Code is usefull when there is compiled code that should change automatically.  
 These changes shouldn't come in every minute, because the application would have to generate and recompile itself every time.  
@@ -27,6 +27,9 @@ To try all the samples clone this project via `git clone https://github.com/sign
 5. [Server side rendering](samples/sample-5.md)
 
 ## Concepts / Classes
+
+These are all the base classes this package offers. Each class comes with their own capabilites.  
+Every class can deal with the same data but has a different behaviour when it comes to generating.
 
 ||generate|compute value|
 |-|-|-|
