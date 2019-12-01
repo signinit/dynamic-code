@@ -113,7 +113,7 @@ export function getFiles(result: GeneratedResult, mailFilename: string = "index.
         data: `${
             result.imports.map(imp => imp + "\n").join("")
         }${
-            result.constants.map(constant => `const "${constant.name}" = ${constant.value}\n`).join("")
+            result.constants.map(constant => `const ${constant.name} = ${constant.value}\n`).join("")
         }${
             result.code
         }`

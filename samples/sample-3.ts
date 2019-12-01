@@ -1,67 +1,33 @@
-import { ElementImport, GenertableFunctionExecution, GeneratableJSON } from "../index"
-import { AppParams } from "./app"
-import { compileTypescript } from "./compiler"
-import express from "express"
-import { GeneratorImport, GeneratorFunctionExecution, GeneratorJSON } from "../generator"
+import { GeneratableJSON, GenertableFunctionExecution, GeneratableImport, ElementImport } from "../index";
+import { sampleFunction } from "./function"
+import { compileTypescript } from "./compiler";
+import { HybridGeneratableImport } from "../hybrid-generatable";
 
-const expressApp = express()
+let func = new HybridGeneratableImport(sampleFunction, new ElementImport("sampleFunction", "samples/function"))
 
-let appFunction = new GeneratorImport(new ElementImport("app", "samples/app"))
+let value: any = { z: "World" }
 
-//dynamic code is more powerfull than just this primitive data
-//by providing a full react components as params to the app the react app becomes dynamic
+let parameter = new GeneratableJSON(value)
 
-let data: AppParams = {
-    pageNumber: 2,
-    subtitle: "Subtitle",
-    title: "Title"
-}
+let execution = new GenertableFunctionExecution(func, parameter)
 
-let appParam = new GeneratorJSON(data)
-
-let appGenerator = new GeneratorFunctionExecution(appFunction, appParam)
-
-let bundledCode: string = ""
-let indexHtml: string = `<html>
-    <head>
-        <script async src='bundle.js'></script>
-    </head>
-    <body>
-        <div id='root'></div>
-    </body>
-</html>`
-
-expressApp.get('/bundle.js', function (req, res) {
-    res.send(bundledCode)
-})
-
-expressApp.get('/', function (req, res) {
-    res.send(indexHtml)
-})
-
-expressApp.get("/change", (req, res) => {
-    appParam.update({
-        pageNumber: parseInt(req.query.pageNumber || "2"),
-        subtitle: req.query.subtitle || "Subtitle",
-        title: req.query.title || "Title"
+compileTypescript(execution.generate(), {})
+    .then(result => {
+        let bundledCode = result["bundle.js"].toString()
+        eval(bundledCode)
     })
-    res.redirect("/")
-})
-
-expressApp.listen(80)
-
-appGenerator.observeFiles().subscribe(files => {
-    compileTypescript(files, {
-        "compilerOptions": {
-            "jsx": "react",
-            "esModuleInterop": true
-        }
+    .catch(error => {
+        console.log(error)
     })
-        .then(result => {
-            bundledCode = result["bundle.js"].toString()
-            console.log("app compiled! Visit http://localhost")
-        })
-        .catch(error => {
-            console.log(error)
-        })
+    .then(() => {
+        //now we change the value to a number, which should result in an compilation error
+        value.z = 10
+    })
+    .then(() => compileTypescript(execution.generate(), {}))
+    .then(result => {
+        let bundledCode = result["bundle.js"].toString()
+        eval(bundledCode)
+    })
+    .catch(error => {
+        console.log(error)
     })

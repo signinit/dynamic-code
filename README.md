@@ -1,6 +1,8 @@
 # Dynamic Code
 
-This package is all about dynamic javascript/typescript/... systems. Dynamic here means: able to change and (re)generate its code.  
+![Dynamic Code GIF](dynamic-code.gif)
+
+This package is all about dynamic javascript/typescript/... systems. Dynamic here means: able to change and (re)generate its code. 
 Its not really about the code thats behind this package but more about the way of structuring a dynamic system.
 
 ## Why and When should you use Dynamic Code
@@ -8,16 +10,34 @@ Its not really about the code thats behind this package but more about the way o
 Dynamic Code is usefull when there is compiled code that should change automatically.  
 These changes shouldn't come in every minute, because the application would have to generate and recompile itself every time.  
 Changes can be like anything like a npm package update or a content update basically anything that should be integrated into the code.  
-Some [possible use cases](#possible-use-cases) are listed bellow. 
+Some [possible use cases](#possible-use-cases) are listed bellow.
 
 ## Install
 
-Use `npm install dynamic-code` to use Dynamic Code in your project.  
-To try all the samples clone this project via `git clone https://github.com/signinit/dynamic-code.git`. Then build everything using `npm run build` and then run any of the samples via `npm run sample<NR>`.
+Execute `npm install dynamic-code` to use Dynamic Code in your project.  
+To try all the samples clone this project via `git clone https://github.com/signinit/dynamic-code.git`. Then build everything using `npm run build` and then run any of the samples 1 to 5 via `npm run sample<NR>`.
+
+
+## Samples
+
+1. [First Generatable](samples/sample-1.md)  
+2. [Hybrid values](samples/sample-2.md)  
+3. [Compile generated code](samples/sample-3.md)  
+4. [Generated webpage](samples/sample-4.md)  
+5. [Server side rendering](samples/sample-5.md)
+
+## Concepts / Classes
+
+||generate|compute value|
+|-|-|-|
+|[Generatable](generatable/README.md)|manual|:heavy_multiplication_x:|
+|[HybridGeneratable](hybrid-generatable/README.md)|manual|:heavy_check_mark:|
+|[Generator](generator/README.md)|on change|:heavy_multiplication_x:|
+|[HybridGenerator](hybrid-generator/README.md)|on change|:heavy_check_mark:|
 
 ## Prevent errors and mistakes
 
-Dynamic Systems might produce contextual or syntax errors while running because they have the ability to change dynamically.  
+Dynamic Systems might produce context or syntax errors while running because they have the ability to change dynamically.  
 To prevent these errors the use of a typed programming language is recommended.
 The [Sample 2](#sample-2) demonstrates how typescript can be used to detect errors in dynamically generated and compiled code.
 
@@ -45,8 +65,6 @@ Obviously if your web app does not need to be dynamic there are much better tool
 
 ## TBD
 
-* sample 4 use lazy loading
-* explain HybridGeneratable in sample 3 and only use normal Generatables in the samples above
-* Move the samples to the specific readme's
-* check share functionality and general correctness of when to generate
-* remove README.md's from npm package
+* sample 5 - use lazy loading
+* write test to check share functionality and general correctness (also when to regenerate)
+* document/comment all functions and classes -> generate documentation

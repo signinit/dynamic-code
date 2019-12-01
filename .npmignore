@@ -8,3 +8,5 @@
 *.ts
 !*.d.ts
 tsconfig.json
+*.gif
+*.blend

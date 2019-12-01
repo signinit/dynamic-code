@@ -1,33 +1,9 @@
-import { GeneratableJSON, GenertableFunctionExecution, GeneratableImport, ElementImport } from "../index";
-import { sampleFunction } from "./function"
-import { compileTypescript } from "./compiler";
-import { HybridGeneratableImport } from "../hybrid-generatable";
+import { HybridGeneratableJSON } from "../index"
 
-let func = new HybridGeneratableImport(sampleFunction, new ElementImport("sampleFunction", "samples/function"))
+let generatable = new HybridGeneratableJSON(20)
 
-let value: any = { z: "World" }
+console.log(generatable.generateValue())
 
-let parameter = new GeneratableJSON(value)
+generatable.update(42)
 
-let execution = new GenertableFunctionExecution(func, parameter)
-
-compileTypescript(execution.generate(), {})
-    .then(result => {
-        let bundledCode = result["bundle.js"].toString()
-        eval(bundledCode)
-    })
-    .catch(error => {
-        console.log(error)
-    })
-    .then(() => {
-        //now we change the value to a number, which should result in an compilation error
-        value.z = 10
-    })
-    .then(() => compileTypescript(execution.generate(), {}))
-    .then(result => {
-        let bundledCode = result["bundle.js"].toString()
-        eval(bundledCode)
-    })
-    .catch(error => {
-        console.log(error)
-    })
+console.log(generatable.generateValue())

@@ -1,18 +1,12 @@
-import { GeneratableImport, ElementImport, GenertableFunctionExecution, GeneratableJSON } from "../index"
-import { ssrApp, AppParams } from "./ssr-app"
+import { ElementImport, GenertableFunctionExecution, GeneratableJSON } from "../index"
+import { AppParams } from "./app"
 import { compileTypescript } from "./compiler"
-import ReactDOM from "react-dom/server"
 import express from "express"
-import { render } from "./ssr-app"
-import { HybridGeneratorImport, HybridGeneratorFunctionExecution, HybridGeneratorJSON } from "../hybrid-generator"
+import { GeneratorImport, GeneratorFunctionExecution, GeneratorJSON } from "../generator"
 
 const expressApp = express()
 
-//this function create the app element which is shared between webapp and webserver
-let ssrAppFunction = new HybridGeneratorImport(ssrApp, new ElementImport("ssrApp", "samples/ssr-app"))
-
-//this function hydrates the served html site and is only needed on the web page
-let ssrRenderFunction = new HybridGeneratorImport(render, new ElementImport("render", "samples/ssr-app"))
+let appFunction = new GeneratorImport(new ElementImport("app", "samples/app"))
 
 //dynamic code is more powerfull than just this primitive data
 //by providing a full react components as params to the app the react app becomes dynamic
@@ -23,13 +17,19 @@ let data: AppParams = {
     title: "Title"
 }
 
-let appParam = new HybridGeneratorJSON(data)
+let appParam = new GeneratorJSON(data)
 
-let appGenerator = new HybridGeneratorFunctionExecution(ssrAppFunction, appParam)
-let renderedGenerator = new HybridGeneratorFunctionExecution(ssrRenderFunction, appParam)
+let appGenerator = new GeneratorFunctionExecution(appFunction, appParam)
 
 let bundledCode: string = ""
-let indexHtml: string = ""
+let indexHtml: string = `<html>
+    <head>
+        <script async src='bundle.js'></script>
+    </head>
+    <body>
+        <div id='root'></div>
+    </body>
+</html>`
 
 expressApp.get('/bundle.js', function (req, res) {
     res.send(bundledCode)
@@ -50,18 +50,7 @@ expressApp.get("/change", (req, res) => {
 
 expressApp.listen(80)
 
-appGenerator.value.subscribe(app => {
-    indexHtml = `<html>
-        <head>
-            <script async src='bundle.js'></script>
-        </head>
-        <body>
-            <div id='root'>${ReactDOM.renderToString(app)}</div>
-        </body>
-    </html>`
-})
-
-renderedGenerator.observeFiles().subscribe(files => {
+appGenerator.observeFiles().subscribe(files => {
     compileTypescript(files, {
         "compilerOptions": {
             "jsx": "react",
@@ -75,5 +64,4 @@ renderedGenerator.observeFiles().subscribe(files => {
         .catch(error => {
             console.log(error)
         })
-})
-    
+    })

@@ -9,7 +9,8 @@
     "sample1": "node samples/sample-1.js",
     "sample2": "node samples/sample-2.js",
     "sample3": "node samples/sample-3.js",
-    "sample4": "node samples/sample-4.js"
+    "sample4": "node samples/sample-4.js",
+    "sample5": "node samples/sample-5.js"
   },
   "author": "Bela Bohlender",
   "license": "MIT",
