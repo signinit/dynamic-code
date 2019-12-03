@@ -71,3 +71,7 @@ Obviously if your web app does not need to be dynamic there are much better tool
 * sample 5 - use lazy loading
 * write test to check share functionality and general correctness (also when to regenerate)
 * document/comment all functions and classes -> generate documentation
+
+## License
+
+See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT).
