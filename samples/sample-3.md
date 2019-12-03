@@ -9,7 +9,7 @@ Now the function needs to be executed with the parameter.
 To bring these two generatables together we use `GeneratableFunctionExecution` with the generatable function and parameter.
 
 ```typescript
-let func = new GeneratableImport(sampleFunction, new ElementImport("sampleFunction", "samples/function"))
+let func = new GeneratableImport(new ElementImport("sampleFunction", "samples/function"))
 
 let value: any = { z: "World" }
 
