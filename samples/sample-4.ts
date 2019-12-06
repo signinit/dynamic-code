@@ -6,7 +6,7 @@ import { GeneratorImport, GeneratorFunctionExecution, GeneratorJSON } from "../g
 
 const expressApp = express()
 
-let appFunction = new GeneratorImport(new ElementImport("app", "samples/app"))
+let appFunction = new GeneratorImport(new ElementImport(__dirname, "app", "app"))
 
 //dynamic code is more powerfull than just this primitive data
 //by providing a full react components as params to the app the react app becomes dynamic

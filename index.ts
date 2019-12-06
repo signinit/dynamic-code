@@ -144,14 +144,13 @@ export abstract class Import {
 
     protected path: string
 
-    constructor(path: string) {
-        this.path = resolve(__dirname, path).replace(/\\/g, "\\\\")
+    constructor(basePath: string ,path: string) {
+        this.path = resolve(basePath, path).replace(/\\/g, "\\\\")
     }
 
 }
 
 export class DefaultImport extends Import {
-
 
     getStatement(variableName: string): string {
         return `import ${variableName} from "${this.path}";`
@@ -161,8 +160,8 @@ export class DefaultImport extends Import {
 
 export class ElementImport extends Import {
 
-    constructor(private element: string, path: string) {
-        super(path)
+    constructor(basePath: string, private element: string, path: string) {
+        super(basePath, path)
     }
 
     getStatement(variableName: string): string {
@@ -172,10 +171,6 @@ export class ElementImport extends Import {
 }
 
 export class AllImport extends Import {
-
-    constructor(path: string) {
-        super(path)
-    }
     
     getStatement(variableName: string): string {
         return `import * as ${variableName} from "${this.path}";`

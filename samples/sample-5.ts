@@ -1,4 +1,4 @@
-import { GeneratableImport, ElementImport, GenertableFunctionExecution, GeneratableJSON } from "../index"
+import { ElementImport } from "../index"
 import { ssrApp, AppParams } from "./ssr-app"
 import { compileTypescript } from "./compiler"
 import ReactDOM from "react-dom/server"
@@ -9,10 +9,10 @@ import { HybridGeneratorImport, HybridGeneratorFunctionExecution, HybridGenerato
 const expressApp = express()
 
 //this function create the app element which is shared between webapp and webserver
-let ssrAppFunction = new HybridGeneratorImport(ssrApp, new ElementImport("ssrApp", "samples/ssr-app"))
+let ssrAppFunction = new HybridGeneratorImport(ssrApp, new ElementImport(__dirname, "ssrApp", "ssr-app"))
 
 //this function hydrates the served html site and is only needed on the web page
-let ssrRenderFunction = new HybridGeneratorImport(render, new ElementImport("render", "samples/ssr-app"))
+let ssrRenderFunction = new HybridGeneratorImport(render, new ElementImport(__dirname, "render", "ssr-app"))
 
 //dynamic code is more powerfull than just this primitive data
 //by providing a full react components as params to the app the react app becomes dynamic

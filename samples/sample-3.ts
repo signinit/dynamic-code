@@ -1,7 +1,7 @@
 import { GeneratableJSON, GenertableFunctionExecution, GeneratableImport, ElementImport } from "../index";
 import { compileTypescript } from "./compiler";
 
-let func = new GeneratableImport(new ElementImport("sampleFunction", "samples/function"))
+let func = new GeneratableImport(new ElementImport(__dirname, "sampleFunction", "function"))
 
 let parameter = new GeneratableJSON({ z: "World" } as any)
 
