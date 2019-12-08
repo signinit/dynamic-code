@@ -49,10 +49,14 @@ export class GeneratorImport extends BaseGenerator {
     private importSubject: Subject<Import>
 
     constructor(
-        imp: Import
+        imp?: Import
     ) {
         super()
-        this.importSubject = new BehaviorSubject<Import>(imp)
+        if(imp != null) {
+            this.importSubject = new BehaviorSubject<Import>(imp)
+        } else {
+            this.importSubject = new Subject<Import>()
+        }
         this.result = this.importSubject.pipe(
             map(imp => generateImport(imp)),
             shareReplay(1)
@@ -70,9 +74,13 @@ export class GeneratorJSON<V = any> extends BaseGenerator {
     result: Observable<GeneratedResult>;
     protected valueSubject: Subject<V>
 
-    constructor(value: V) {
+    constructor(value?: V) {
         super()
-        this.valueSubject = new BehaviorSubject<V>(value)
+        if(value != null) {
+            this.valueSubject = new BehaviorSubject<V>(value)
+        } else {
+            this.valueSubject = new Subject<V>()
+        }
         this.result = this.valueSubject.pipe(
             map(value => generateJson(value)),
             shareReplay(1)
@@ -90,9 +98,13 @@ export class GeneratorFunctionExecution<Func extends Generator = Generator, Para
     result: Observable<GeneratedResult>;
     protected funcParamSubject: Subject<{ func: Func, parameters: Parameters }>
 
-    constructor(func: Func, ...parameters: Parameters) {
+    constructor(func?: Func, ...parameters: Parameters) {
         super()
-        this.funcParamSubject = new BehaviorSubject<{ func: Func, parameters: Parameters }>({ func, parameters })
+        if(func != null) {
+            this.funcParamSubject = new BehaviorSubject<{ func: Func, parameters: Parameters }>({ func, parameters })
+        } else {
+            this.funcParamSubject = new Subject<{ func: Func, parameters: Parameters }>()
+        }
         this.result = this.funcParamSubject.pipe(
             switchMap(({ func, parameters }) =>
                 combineLatest(func.result, ...parameters.map(param => param.result))
@@ -117,11 +129,15 @@ export class GeneratorLazyLoading<G extends Generator = Generator> extends BaseG
     protected generatorSubject: Subject<G>
 
     constructor(
-        generator: G,
+        generator?: G,
         private filename: string | undefined = undefined
     ) {
         super()
-        this.generatorSubject = new BehaviorSubject<G>(generator)
+        if(generator != null) {
+            this.generatorSubject = new BehaviorSubject<G>(generator)
+        } else {
+            this.generatorSubject = new Subject<G>()
+        }
         this.result = this.generatorSubject.pipe(
             switchMap(generator => generator.result),
             map(result => generateLazyLoading(result, this.filename)),
@@ -140,9 +156,13 @@ export class GeneratorShare<G extends Generator = Generator> extends BaseGenerat
     result: Observable<GeneratedResult>
     protected generatorSubject: Subject<G>
 
-    constructor(generator: G) {
+    constructor(generator?: G) {
         super()
-        this.generatorSubject = new BehaviorSubject<G>(generator)
+        if(generator != null) {
+            this.generatorSubject = new BehaviorSubject<G>(generator)
+        } else {
+            this.generatorSubject = new Subject()
+        }
         this.result = this.generatorSubject.pipe(
             switchMap(generator => generator.result),
             map(result => generateShare(result)),

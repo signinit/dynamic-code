@@ -18,21 +18,32 @@ export class HybridGeneratorJSON<T = any> extends GeneratorJSON<T> implements Hy
 export class HybridGeneratorImport<T = any> extends BaseGenerator implements HybridGenerator<T> {
     
     result: Observable<GeneratedResult>
-    value: Subject<T>
-    importSubject: Subject<Import>
+    value: Observable<T>
+    private subject: Subject<{ value: T, imp: Import }>
 
-    constructor(value: T, imp: Import) {
+    constructor(value?: T, imp?: Import) {
         super()
-        this.value = new BehaviorSubject<T>(value)
-        this.importSubject = new BehaviorSubject<Import>(imp)
-        this.result = this.importSubject.pipe(
-            map(imp => generateImport(imp))
+        if(value != null && imp != null) {
+            this.subject = new BehaviorSubject({
+                value,
+                imp
+            })
+        } else {
+            this.subject = new Subject()
+        }
+        this.result = this.subject.pipe(
+            map(({ imp }) => generateImport(imp))
+        )
+        this.value = this.subject.pipe(
+            map(({ value}) => value)
         )
     }
 
     update(value: T, imp: Import) {
-        this.importSubject.next(imp)
-        this.value.next(value)
+        this.subject.next({
+            value,
+            imp
+        })
     }
 
 }
@@ -46,7 +57,7 @@ export class HybridGeneratorFunctionExecution<Parameters extends Array<any> = Ar
     value: Observable<any>
 
     constructor(
-        func: HybridGenerator<(...parameters: Parameters) => Result>,
+        func?: HybridGenerator<(...parameters: Parameters) => Result>,
         ...parameters: GetHybridGeneratorArray<Parameters>
     ) {
         super(func, ...parameters as any)
@@ -64,7 +75,7 @@ export class HybridGeneratorLazyLoading<T = any> extends GeneratorLazyLoading<Hy
 
     value: Observable<Promise<T>>
 
-    constructor(generator: HybridGenerator<T>) {
+    constructor(generator?: HybridGenerator<T>) {
         super(generator)
         this.value = this.generatorSubject.pipe(
             switchMap(generator => generator.value),

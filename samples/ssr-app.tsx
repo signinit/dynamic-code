@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom"
-import React, { ReactElement, FunctionComponent } from "react"
+import React, { ReactElement } from "react"
 
 export type AppParams = {
     title: string
