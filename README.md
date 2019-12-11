@@ -15,7 +15,7 @@ Some [possible use cases](#possible-use-cases) are listed bellow.
 ## Install
 
 Execute `npm install dynamic-code` to use Dynamic Code in your project.  
-To try all the samples clone this project via `git clone https://github.com/signinit/dynamic-code.git`. Then build everything using `npm run build` and then run any of the samples 1 to 5 via `npm run sample<NR>`.
+To try all the samples clone this project via `git clone https://github.com/signinit/dynamic-code.git`. Install depenencies via `npm install `and build everything using `npm run build`. If everything was successfull run any of the samples 1 to 5 via `npm run sample<NR>`.
 
 
 ## Samples
