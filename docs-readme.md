@@ -2,7 +2,7 @@
 
 The documentation should be used as reference guide but not as a tutorial as there are no real explanations included.
 
-[Click here](../samples/sample-1.md) for a Dynamic Code tutorial.
+[Click here](https://github.com/signinit/dynamic-code/blob/master/samples/sample-1.md) for a Dynamic Code tutorial.
 
 # 🔗 Links
 * [🔷 **Index module**](modules/_index_.html)
