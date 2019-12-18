@@ -67,6 +67,10 @@ Just like building a dynamic web app it is possible to build a dynamic webapp th
 Every dynamic code that is generated as "hybrid" can also be executed directly. This means the code can be run on the server side and can be served to the web.  
 Obviously if your web app does not need to be dynamic there are much better tools for sole SSR.
 
+## Docs
+
+Documentation generated from the comments in the source code can be found under https://signinit.github.io/dynamic-code/ .
+
 ## TBD
 
 * sample 5 - use lazy loading
