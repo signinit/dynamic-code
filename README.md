@@ -3,6 +3,8 @@
 This package is all about dynamic javascript/typescript/... systems. Dynamic here means: able to change and (re)generate its code. 
 Its not really about the code thats behind this package but more about the way of structuring a dynamic system.
 
+Introduction to Dynamic Code - [Medium Article](https://medium.com/@signinit/dynamic-code-352a0011ce05?sk=af136ea95cccbeea42e6461b2e1fb694)
+
 ![Dynamic Code GIF](dynamic-code.gif)
 
 ## Why and When can you use Dynamic Code
@@ -16,7 +18,6 @@ Some [possible use cases](#possible-use-cases) are listed bellow.
 
 Execute `npm install dynamic-code` to use Dynamic Code in your project.  
 To try all the samples clone this project via `git clone https://github.com/signinit/dynamic-code.git`. Install depenencies via `npm install `and build everything using `npm run build`. If everything was successfull run any of the samples 1 to 5 via `npm run sample<NR>`.
-
 
 ## Samples
 
@@ -69,8 +70,12 @@ Obviously if your web app does not need to be dynamic there are much better tool
 ## TBD
 
 * sample 5 - use lazy loading
+* write sample 6 - dynamic code and deno
 * write test to check share functionality and general correctness (also when to regenerate)
 * document/comment all functions and classes -> generate documentation
+* make readmes more fany with icons :)
+* include repositories that use dynamic code
+* write about creating a new Genertable/Generator (like a GeneratableArray & GeneratorArray)
 
 ## License
 

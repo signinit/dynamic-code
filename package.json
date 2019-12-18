@@ -10,7 +10,8 @@
     "sample2": "node samples/sample-2.js",
     "sample3": "node samples/sample-3.js",
     "sample4": "node samples/sample-4.js",
-    "sample5": "node samples/sample-5.js"
+    "sample5": "node samples/sample-5.js",
+    "build-docs": "typedoc index.ts --out docs/ --module modules --readme docs-readme.md"
   },
   "author": "Bela Bohlender",
   "license": "MIT",

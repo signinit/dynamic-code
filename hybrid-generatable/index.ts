@@ -1,8 +1,16 @@
 import { Generatable, GeneratableJSON, GenertableFunctionExecution, GeneratableLazyLoading, BaseGeneratable, GeneratableShare } from "../generatable";
 import { Import, generateImport, GeneratedResult } from "../index";
 
+/**
+ * base interface for a hybrid generatable
+ * (it extends all the functions of an Generatable but can also compute the result of the generated code)
+ */
 export interface HybridGeneratable<T = any> extends Generatable {
 
+    /**
+     * generate the value that would be calculated by the generated code
+     * @param generationId 
+     */
     generateValue(generationId: number | undefined): T
 
 }
@@ -40,6 +48,9 @@ export type GetHybridGeneratableObject<O extends Object> = {
     [Name in keyof O]: HybridGeneratable<O[Name]>
 }*/
 
+/**
+ * hybrid generatable for a json value
+ */
 export class HybridGeneratableJSON<T = any> extends GeneratableJSON<T> implements HybridGeneratable<T> {
 
     generateValue(): T {
@@ -47,8 +58,16 @@ export class HybridGeneratableJSON<T = any> extends GeneratableJSON<T> implement
     }
 }
 
+/**
+ * hybrid generatable for an import
+ */
 export class HybridGeneratableImport<T = any> extends BaseGeneratable implements HybridGeneratable<T> {
 
+    /**
+     * import generatable constructor
+     * @param value the value that should be imported
+     * @param imp the import to generate code from
+     */
     constructor(
         protected value: T,
         protected imp: Import
@@ -56,6 +75,11 @@ export class HybridGeneratableImport<T = any> extends BaseGeneratable implements
         super()
     }
 
+    /**
+     * change the import
+     * @param value the value that should be imported
+     * @param imp the new import
+     */
     update(value: T, imp: Import): void {
         this.value = value
         this.imp = imp
@@ -71,6 +95,9 @@ export class HybridGeneratableImport<T = any> extends BaseGeneratable implements
 
 }
 
+/**
+ * hybrid generatable for a function execution
+ */
 export class HybridGenertableFunctionExecution<Parameters extends Array<any> = [], Result = any> extends GenertableFunctionExecution<HybridGeneratable<(...parameters: Parameters) => Result>, GetHybridGeneratableArray<Parameters>> implements HybridGeneratable<Result> {
 
     private generationId: number | undefined
@@ -87,6 +114,9 @@ export class HybridGenertableFunctionExecution<Parameters extends Array<any> = [
 
 }
 
+/**
+ * hybrid generatable for a lazy loadable
+ */
 export class HybridGeneratableLazyLoading<T = any> extends GeneratableLazyLoading<HybridGeneratable<T>> implements HybridGeneratable<Promise<T>> {
 
     private generationId: number | undefined
@@ -101,6 +131,9 @@ export class HybridGeneratableLazyLoading<T = any> extends GeneratableLazyLoadin
 
 }
 
+/**
+ * hybrid generatable for a share
+ */
 export class HybridGeneratableShare<T = any> extends GeneratableShare<HybridGeneratable<T>> implements HybridGeneratable<T> {
 
     private lastGenerationId: number | undefined
@@ -119,6 +152,9 @@ export class HybridGeneratableShare<T = any> extends GeneratableShare<HybridGene
 
 }
 
+/**
+ * type for transforming an array of values to an array of Hybrid Generatable of values
+ */
 export type GetHybridGeneratableArray<Parameters extends Array<any>> = {
     [Index in keyof Parameters]: HybridGeneratable<Parameters[Index]>
 }

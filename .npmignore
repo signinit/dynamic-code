@@ -3,6 +3,7 @@
 /types/
 /temp/
 /.git/
+/docs/
 *.png
 *.md
 *.ts

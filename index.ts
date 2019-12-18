@@ -5,6 +5,9 @@ export * from "./hybrid-generatable"
 export * from "./generator"
 export * from "./hybrid-generator"
 
+/**
+ * the result of generating dynamic code
+ */
 export type GeneratedResult = {
     externalFiles: Array<File>
     imports: Array<string>
@@ -12,11 +15,17 @@ export type GeneratedResult = {
     code: string
 }
 
+/**
+ * describes a contant value
+ */
 export type Constant = {
     name: string,
     value: string
 }
 
+/**
+ * a plan file that was generated
+ */
 export type File = {
     name: string,
     data: string
@@ -46,6 +55,10 @@ export function generateObject(object: Array<[ string, GeneratedResult ]>): Gene
     }
 }*/
 
+/**
+ * generates a result from a json value
+ * @param json the value that should be generated to code
+ */
 export function generateJson(json: any): GeneratedResult {
     return {
         code: JSON.stringify(json),
@@ -56,6 +69,10 @@ export function generateJson(json: any): GeneratedResult {
 
 }
 
+/**
+ * generates a result from an import
+ * @param imp the import specification (import all, import element, import default)
+ */
 export function generateImport(imp: Import): GeneratedResult {
     let variableName = randomVarName()
     return {
@@ -69,6 +86,11 @@ export function generateImport(imp: Import): GeneratedResult {
 
 }
 
+/**
+ * generates a result from a executing a function and some parameters
+ * @param func the function that should be executed
+ * @param parameters the parameters of the function
+ */
 export function generateFunctionExecution(func: GeneratedResult, ...parameters: Array<GeneratedResult>): GeneratedResult {
     return {
         code: `${func.code}(${parameters.map(parameter => parameter.code).join(",")});`,
@@ -78,6 +100,11 @@ export function generateFunctionExecution(func: GeneratedResult, ...parameters: 
     }
 }
 
+/**
+ * generates a result that lazy loades a value
+ * @param result the value that should be lazy loaded
+ * @param filename an optional name for the file where the lazy loadable part is written to and later loaded from
+ */
 export function generateLazyLoading(result: GeneratedResult, filename?: string): GeneratedResult {
     if(filename == null) {
         filename = `${randomFileName()}.ts`
@@ -93,6 +120,11 @@ export function generateLazyLoading(result: GeneratedResult, filename?: string):
     }
 }
 
+/**
+ * generates a result that shares a value
+ * (consider the result of a function, without a share, each time the result is referenced it would be reexecuted)
+ * @param result the value that should be shared
+ */
 export function generateShare(result: GeneratedResult): GeneratedResult {
     let variableName = randomVarName()
     return {
@@ -106,6 +138,11 @@ export function generateShare(result: GeneratedResult): GeneratedResult {
     }
 }
 
+/**
+ * transforms a generated result into files
+ * @param result the result that should be transformed to files
+ * @param mailFilename an optional name for the entry file
+ */
 export function getFiles(result: GeneratedResult, mailFilename: string = "index.ts"): Array<File> {
     //TODO merge imports
     let mainFile: File = {
@@ -138,18 +175,38 @@ export function randomVarName() {
     return "ssssssss".replace(/s/g, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97))
 }
 
+/**
+ * the base class for all imports
+ */
 export abstract class Import {
 
-    abstract getStatement(variableName: string): string
 
+    /**
+     * the path to import from
+     */
     protected path: string
 
-    constructor(basePath: string ,path: string) {
+    /**
+     * import constructor
+     * @param basePath the base path (insert __dirname here for the path to the current file)
+     * @param path the path (realtive to the basepath) to import from
+     */
+    constructor(basePath: string, path: string) {
         this.path = resolve(basePath, path).replace(/\\/g, "\\\\")
     }
 
+    /**
+     * generate a statement
+     * @param variableName the name of a variable where the imported value should be saved into
+     */
+    abstract getStatement(variableName: string): string
+
 }
 
+/**
+ * the default import
+ * ('import xyz from "./abc";')
+ */
 export class DefaultImport extends Import {
 
     getStatement(variableName: string): string {
@@ -158,8 +215,18 @@ export class DefaultImport extends Import {
 
 }
 
+/**
+ * the element import
+ * ('import { xyz } from "./abc";')
+ */
 export class ElementImport extends Import {
 
+    /**
+     * element import constructor
+     * @param basePath the base path (insert __dirname here for the path to the current file)
+     * @param element the element that should be imported (the thing the the brackets)
+     * @param path the path (realtive to the basepath) to import from
+     */
     constructor(basePath: string, private element: string, path: string) {
         super(basePath, path)
     }
@@ -170,6 +237,10 @@ export class ElementImport extends Import {
 
 }
 
+/**
+ * the star/all import
+ * ('import * as xyz from "./abc";')
+ */
 export class AllImport extends Import {
     
     getStatement(variableName: string): string {
