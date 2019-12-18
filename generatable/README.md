@@ -1,4 +1,4 @@
-# Generatable
+# ⬜️ Generatable
 
 A Generatable is pull based.  
 That means to get the result, you have to call `generate()`.

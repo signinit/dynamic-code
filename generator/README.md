@@ -1,4 +1,4 @@
-# Generator
+# ⬛️ Generator
 
 A Generator is push based.  
 That means by subscribing to the `value` attribute each time there is a change the result is recompiled.  
